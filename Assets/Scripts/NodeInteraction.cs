@@ -40,7 +40,7 @@ public class NodeInteraction : MonoBehaviour
                     }
                     else
                     {
-                        Debug.Log("Raycast did not hit any object.");
+                        Debug.Log("Raycast did NOT hit an object"); 
                     }
                 }
             }
