@@ -1,4 +1,6 @@
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class NodeInteraction : MonoBehaviour
 {
@@ -7,18 +9,24 @@ public class NodeInteraction : MonoBehaviour
 
     void Update()
     {
+        //touchInput();
+        mouseInput();
+    }
+
+    private void touchInput()
+    {
         // Check if there is a touch input
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
 
-            if (touch.phase == TouchPhase.Began)
+            if (touch.phase == UnityEngine.TouchPhase.Began)
             {
                 Ray ray = Camera.main.ScreenPointToRay(touch.position);
                 RaycastHit hit;
 
                 // Perform raycast to detect nodes
-                { 
+                {
                     if (Physics.Raycast(ray, out hit))
                     {
                         Debug.Log("Raycast hit: " + hit.collider.gameObject.name);
@@ -27,7 +35,7 @@ public class NodeInteraction : MonoBehaviour
                         {
                             Debug.Log("Hit a node: " + hit.collider.gameObject.name);
                             int nodeId = hit.collider.gameObject.GetComponent<NodeID>().nodeID;
-                            ShowCanvasForNode(nodeId);
+                            //ShowCanvasForNode(nodeId);
                         }
                     }
                     else
@@ -39,29 +47,52 @@ public class NodeInteraction : MonoBehaviour
         }
     }
 
-    // Show the canvas associated with the selected node
-    void ShowCanvasForNode(int nodeId)
-{
-    Debug.Log("Node selected with ID: " + nodeId);
 
-    // Deactivate all canvases first
-    foreach (GameObject canvas in canvases)
+    private void mouseInput()
     {
-        canvas.SetActive(false);
-    }
-
-    // Activate the correct canvas
-    foreach (GameObject canvas in canvases)
-    {
-        NodeInfoScreen infoScreen = canvas.GetComponent<NodeInfoScreen>();
-        if (infoScreen.nodeId == nodeId)
+        if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log("Activating canvas for node: " + nodeId);
-            canvas.SetActive(true);
-            break;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            // Perform raycast to detect nodes
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.collider.CompareTag("Node"))
+                {
+                    Debug.Log("Hit a node: " + hit.collider.gameObject.name);
+                   
+                }
+            }
+            else
+            {
+                Debug.Log("Raycast did not hit any object.");
+            }
         }
     }
+
+    // Show the canvas associated with the selected node
+    /*    void ShowCanvasForNode(int nodeId)
+    {
+        Debug.Log("Node selected with ID: " + nodeId);
+
+        // Deactivate all canvases first
+        foreach (GameObject canvas in canvases)
+        {
+            canvas.SetActive(false);
+        }
+
+        // Activate the correct canvas
+        foreach (GameObject canvas in canvases)
+        {
+            NodeInfoScreen infoScreen = canvas.GetComponent<NodeInfoScreen>();
+            if (infoScreen.nodeId == nodeId)
+            {
+                Debug.Log("Activating canvas for node: " + nodeId);
+                canvas.SetActive(true);
+                break;
+            }
+        }
+    }*/
+
 }
-
-    }
-
